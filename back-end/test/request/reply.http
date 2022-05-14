@@ -1,0 +1,14 @@
+### Get All Coins
+GET http://localhost:8000/reply HTTP/1.1
+
+
+### Post Single Reply
+POST http://localhost:8000/reply HTTP/1.1
+Content-Type:  application/json
+
+{
+    "commentId": 6,
+    "userId": 2,
+    "body": "Klk mi loco",
+    "imageUrl": null
+}

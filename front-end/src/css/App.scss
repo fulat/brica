@@ -1,0 +1,52 @@
+@import "./gobal";
+
+body {
+  background: $veryLighPink;
+  overflow: hidden;
+}
+
+.Header {
+  background: white;
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.179);
+}
+
+.theme {
+  width: 30px;
+  height: 30px;
+  margin-right: 20px;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.16);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 100%;
+  /* border: 1px solid rgb(199, 203, 206, 1); */
+}
+
+
+hr {
+    border: 0.5px solid rgba(199, 203, 206, 1) !important;
+  }
+  
+  .hover:hover {
+    cursor: pointer;
+  }
+  
+  .hoverWithBG:hover {
+    cursor: pointer;
+    background: rgba(234, 234, 235, 0.423) !important;
+  }
+  
+  .hover:active {
+    opacity: 0.5;
+  }
+
+
+  .dropdown-toggle::after {
+    display: none;
+  }
+
+  .title {
+    text-transform: capitalize !important;
+  }
