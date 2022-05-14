@@ -1,0 +1,21 @@
+{
+  "name": "brica",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:server": "cd back-end && npm run start",
+    "start:client": "cd front-end && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fulat/brica.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fulat/brica/issues"
+  },
+  "homepage": "https://github.com/fulat/brica#readme"
+}
