@@ -36,25 +36,7 @@ class Feed extends Component {
         this.inputRef = React.createRef()
     }
 
-    fetchPosts = async () => {
-        await axios.get(`/posts/followers/${2}`).then((res) => {
-            let posts = []
-            if (!res.data.data.error) {
-                res.data.data.forEach(post => {
-                    // console.log(post.user.posts)
-                    posts.push(post.user.posts)
-                })
-            }
-            this.setState({
-                posts: this.sortDESC([].concat.apply([], posts))
-            })
-        })
-    }
-
-    sortDESC = (arr) => {
-        const result = arr.sort(function (a, b) { return b.id - a.id })
-        return result
-    }
+    sortDESC = (arr) => arr.sort((a, b) => b.id - a.id)
 
     handleILikesIt = (likes) => {
         if (likes.length === 0) return false
@@ -96,7 +78,6 @@ class Feed extends Component {
             if (file) {
                 await axios.post("comments", { postId, userId: id, body: body === "" ? null : body, imageUrl: file.data.url, parentId: null }).then((res) => {
                     console.log(res.data);
-                    this.fetchPosts()
                     this.setState({
                         body: "",
                         hasMedia: false
@@ -108,7 +89,6 @@ class Feed extends Component {
             }
         } else {
             await axios.post("comments", { postId, userId: id, body, imageUrl: null, parentId: null }).then((res) => {
-                this.fetchPosts()
                 this.setState({
                     body: "",
                     hasMedia: false
@@ -131,10 +111,11 @@ class Feed extends Component {
 
     handleDeleteComment = async (postId) => {
         await axios.delete(`posts/${postId}`).then((rs) => {
-            this.fetchPosts()
+            $(`#post-${postId}`).hide()
+            $(`.ant-popover`).hide()
         }).catch((err) => {
-            console.error("error:", err);
-        });
+            console.error("error:", err)
+        })
     }
 
     handleComediaMedia = (e, id) => {
@@ -227,17 +208,11 @@ class Feed extends Component {
     };
 
 
-    componentDidMount() {
-        this.fetchPosts()
-    }
-
-
     render() {
-        const { posts } = this.state
-
+        const { feeds } = this.props.state.posts
         return (
-            posts.map((post, key) => (
-                <div key={key} id={post.id} className='Feed mb-3 p-3' style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            feeds.map((post, key) => (
+                <div key={key} id={`post-${post.id}`} className='Feed mb-3 p-3' style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                     <div>
                         <div className='col-1' style={{ display: "flex", width: "100%" }}>
                             <div className='col-11' style={{ display: "flex" }}>
@@ -250,7 +225,7 @@ class Feed extends Component {
                                 </div>
                             </div>
                             <div className='col-1 hover' style={{ alignItems: 'center', display: 'flex', justifyContent: 'center', margin: 0 }} >
-                                <Popover placement="bottom" trigger="click" content={
+                                <Popover id={`popover-${post.id}`} placement="bottom" trigger="click" content={
                                     <div style={{ width: 300 }}>
                                         <div onClick={() => this.handleDeleteComment(post.id)} className="item ps-3 hover"
                                             style={{ display: "flex", alignItems: "center", height: 50 }}>

@@ -4,7 +4,8 @@ const initialstate = {
     imageUrl: null,
     hasMedia: false,
     showImageModal: false,
-    showImageModalData: ""
+    showImageModalData: "",
+    feeds: []
 }
 
 const posts = (state = initialstate, action) => {
@@ -34,6 +35,10 @@ const posts = (state = initialstate, action) => {
                 imageUrl: action.data,
                 visibility: false,
                 hasMedia: true
+            })
+        case "FETCH_FEEDS":
+            return Object.assign({}, state, {
+                feeds: action.data
             })
         default:
             return state

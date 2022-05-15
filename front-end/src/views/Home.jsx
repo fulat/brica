@@ -1,20 +1,46 @@
 import React, { Component } from 'react'
 import TopCoins from "../components/TopCoins"
 import Post from "../components/post/"
-import Feed from '../components/post/feed'
+import Feeds from '../components/post/feed'
 import Modals from '../components/post/modal'
 import { connect } from 'react-redux'
-import AuthContextLogin from "../context/AuthLoging"
+import APIsContext from "../context/APIsContext"
 import OurToken from "../components/ourToken"
+import axios from 'axios'
 
 class Home extends Component {
+    static contextType = APIsContext
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            feeds: []
+        };
     }
+
+    fetchPosts = async () => {
+        await axios.get(`/posts/followers/${2}`).then((res) => {
+            let posts = []
+            if (!res.data.data.error) {
+                res.data.data.forEach(post => {
+                    posts.push(post.user.posts)
+                })
+            }
+            this.setState({
+                feeds: this.sortDESC([].concat.apply([], posts))
+            })
+            // console.log(this.sortDESC([].concat.apply([], posts)))
+        })
+
+    }
+
+    sortDESC = (arr) => arr.sort((a, b) => b.id - a.id)
+
+    componentDidMount() {
+        this.fetchPosts()
+    }
+
+
     render() {
-        const { currentUser } = this.context
-        this.props.dispatch({ type: "" })
         return (
             <div className="Home">
                 <div className="row container">
@@ -25,7 +51,7 @@ class Home extends Component {
                     <div className="col-6 ps-2" style={{ height: 500, padding: 0 }}>
                         <div className="scroll">
                             <Post />
-                            <Feed />
+                            <Feeds />
                         </div>
                     </div>
                 </div>
@@ -35,7 +61,6 @@ class Home extends Component {
     }
 }
 
-Home.contextType = AuthContextLogin
 
 const mapStateToProps = (state, ownProps) => ({
     state, ownProps

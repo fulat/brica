@@ -29,11 +29,9 @@ export const AuthLogin = () => {
                         exp: Math.floor(Date.now() / 1000),
                         maxAge: new Date().getSeconds() + 2
                     })
-                    console.log(res.data)
                     setCurrentUser(res.data.user)
                     setAuth(true)
                 })
-                console.log("ok")
             } else {
                 cookies.remove("ss_us_tnk")
                 setAuth(false)
@@ -41,7 +39,6 @@ export const AuthLogin = () => {
         }
         createUser()
     }, [])
-    console.log(auth)
     return (
         <AuthContextLogin.Provider value={{ currentUser }}>
             {auth ?
