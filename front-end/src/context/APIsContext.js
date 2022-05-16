@@ -26,14 +26,12 @@ export const APIs = (props) => {
     }, [])
 
     const sortDESC = (arr) => arr.sort((a, b) => b.id - a.id)
-
     return (
         <APIContext.Provider value={{ feed }}>
             <Outlet />
         </APIContext.Provider >
     )
 }
-
 
 const mapStateToProps = (state, ownProps) => ({
     state, ownProps
