@@ -6,7 +6,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import AuthContextLogin from '../../context/AuthLoging'
-import $ from "jquery"
 
 class Reply extends Component {
     static contextType = AuthContextLogin
@@ -16,6 +15,7 @@ class Reply extends Component {
         this.state = {
             likesCount: 0,
             iLiked: false,
+            replies: []
         }
     }
 
@@ -39,23 +39,32 @@ class Reply extends Component {
         return false
     }
 
-    handleLikereply = async (replyId, replyLikes) => {
-        console.log("Reply:", replyId, replyLikes);
-        // const { id } = this.context.currentUser
-        // await axios.post(`/likes/reply/${replyId}`, {
-        //     userId: id
-        // }).then((res) => {
-        //     this.setState({
-        //         iLiked: true
-        //     })
-        //     this.handleItLikes(replyLikes)
-        //     $(`#reply-like-${replyId}`).text(res.data.likesCount)
-        // })
+    handleLikereply = async (replyId, key) => {
+        const { id } = this.context.currentUser
+        await axios.post(`/likes/reply/${replyId}`, {
+            userId: id
+        }).then((res) => {
+            this.fetchReply()
+        })
     }
 
+    fetchReply = async () => {
+        await axios.get(`/reply/comment/${24}`).then((res) => {
+            if (!res.data.error) {
+                this.setState({
+                    replies: res.data.data
+                })
+            }
+        })
+    }
+
+    componentDidMount() {
+        this.fetchReply()
+    }
 
     render() {
-        const { replies, comment } = this.props
+        const { comment } = this.props
+        const { replies } = this.state
         return (
             this.sortDESC(replies).map((reply, key) => (
                 <div key={key} className='mt-2' style={{ display: "flex" }}>
@@ -78,7 +87,7 @@ class Reply extends Component {
                             <span>{reply.body}</span>
                         </div>
                         <div style={{ display: "flex", alignItems: "flex-end", width: "100%" }}>
-                            <div onClick={() => this.handleLikereply(reply.id, reply.replyLikes)} className="live hover" style={{ display: "flex", alignItems: "center", paddingLeft: 10 }}>
+                            <div onClick={() => this.handleLikereply(reply.id, key)} className="live hover" style={{ display: "flex", alignItems: "center", paddingLeft: 10 }}>
                                 <FontAwesomeIcon id={`reply-like-icon-${reply.id}`} style={{ fontSize: 14, color: this.handleItLikes(reply.replyLikes) ? "#0073DD" : "#CDCDCD" }} icon={faHeart} />
                                 <span style={{ fontSize: 12 }} className='ps-2'>
                                     <b>Like </b>

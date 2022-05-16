@@ -84,8 +84,6 @@ class Commments extends Component {
         this.setState({
             limit: this.state.limit + 3
         })
-        console.log("Limit", this.state.limit);
-
     }
 
     fetchComments = async (limit) => {
@@ -190,7 +188,6 @@ class Commments extends Component {
             const file = await axios.post("https://api.cloudinary.com/v1_1/dbsswqtg9/image/upload", formData)
             if (file) {
                 await axios.post("comments", { postId, userId: id, body: body === "" ? null : body, imageUrl: file.data.url, parentId: null }).then((res) => {
-                    console.log(res.data);
                     this.setState({
                         body: "",
                         hasMedia: false
@@ -261,8 +258,8 @@ class Commments extends Component {
 
     handleDeleteComment = async (postId) => {
         // await axios.delete(`posts/${postId}`).then((rs) => {
-            $(`#post-${postId}`).hide()
-            $(`.ant-popover`).hide()
+        $(`#post-${postId}`).hide()
+        $(`.ant-popover`).hide()
         // }).catch((err) => {
         //     console.error("error:", err)
         // })

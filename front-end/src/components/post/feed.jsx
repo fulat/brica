@@ -77,7 +77,6 @@ class Feed extends Component {
             const file = await axios.post("https://api.cloudinary.com/v1_1/dbsswqtg9/image/upload", formData)
             if (file) {
                 await axios.post("comments", { postId, userId: id, body: body === "" ? null : body, imageUrl: file.data.url, parentId: null }).then((res) => {
-                    console.log(res.data);
                     this.setState({
                         body: "",
                         hasMedia: false
@@ -204,12 +203,10 @@ class Feed extends Component {
 
     handleVisibleChange = visible => {
         this.setState({ visible });
-        console.log(visible)
     }
 
     render() {
         const { feeds } = this.props.state.posts
-        console.log(feeds)
         return (
             feeds.map((post, key) => (
                 <div key={key} id={`post-${post.id}`} className='Feed mb-3 p-3' style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
