@@ -40,16 +40,17 @@ class Reply extends Component {
     }
 
     handleLikereply = async (replyId, replyLikes) => {
-        const { id } = this.context.currentUser
-        await axios.post(`/likes/reply/${replyId}`, {
-            userId: id
-        }).then((res) => {
-            this.setState({
-                iLiked: true
-            })
-            this.handleItLikes(replyLikes)
-            $(`#reply-like-${replyId}`).text(res.data.likesCount)
-        })
+        console.log("Reply:", replyId, replyLikes);
+        // const { id } = this.context.currentUser
+        // await axios.post(`/likes/reply/${replyId}`, {
+        //     userId: id
+        // }).then((res) => {
+        //     this.setState({
+        //         iLiked: true
+        //     })
+        //     this.handleItLikes(replyLikes)
+        //     $(`#reply-like-${replyId}`).text(res.data.likesCount)
+        // })
     }
 
 

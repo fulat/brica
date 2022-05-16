@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const { GetAll, GetOne, DeleteOne, GetCommentsWithFilter, Post, Patch, GetAllWithFilterWithInclude } = require("../auth/routesMaker")
-const { Users, CommentLikes, Comments, Reply, ReplyLikes } = require("../models")
+const { Users, CommentLikes, Comments, Reply, Likes, ReplyLikes } = require("../models")
 const joi = require("joi")
 const { db } = require("../config/db")
 const ReplyOfReply = require("../models/ReplyOfReply")
@@ -42,7 +42,6 @@ router.get("/count/:id", async (req, res) => {
 })
 
 router.get("/post/:id", async (req, res) => {
-    console.log()
     await Comments.findAndCountAll({
         where: {
             postId: req.params.id,
@@ -148,8 +147,52 @@ router.patch("/:id", (req, res) => {
     Patch(req, res, Comments)
 })
 
-router.delete("/:id", (req, res) => {
-    DeleteOne(req, res, Comments)
+router.delete("/:id", async (req, res) => {
+    await Comments.destroy({
+        where: { id: req.params.id },
+        include: [
+            { model: CommentLikes },
+            {
+                model: Reply,
+                include: { model: ReplyLikes }
+            }
+        ]
+    }).then(async (comment) => {
+        
+        // if (comment) {
+        //     const likesDestoy = await CommentLikes.destroy({ where: { commentId: comment.id } })
+        //     const commentDestroy = comment.destroy()
+
+        //     const reply = await Reply.findAll({ where: { commentId: comment.id } })
+        //     const replyDestroy = await Reply.destroy({ where: { commentId: comment.id } })
+        //     const ReplyLikesDestroy = await ReplyLikes.destroy({ where: { replyId: reply.id } })
+
+        //     Promise.all([ReplyLikesDestroy, likesDestoy, replyDestroy, commentDestroy]).then(() => {
+        //         data.destroy().then(async () => {
+        res.json({
+            auth: true,
+            message: "row deleted succefully"
+        })
+        //         })
+        //     }).catch(err => {
+        //         res.json({
+        //             error: true,
+        //             message: err.toString()
+        //         })
+        //     })
+        // } else {
+        //     res.json({
+        //         auth: false,
+        //         message: "row does not exist"
+        //     })
+        // }
+
+    }).catch((err) => {
+        res.json({
+            error: true,
+            message: err.toString()
+        })
+    })
 })
 
 module.exports = router

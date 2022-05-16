@@ -110,12 +110,12 @@ class Feed extends Component {
     }
 
     handleDeleteComment = async (postId) => {
-        await axios.delete(`posts/${postId}`).then((rs) => {
+        // await axios.delete(`posts/${postId}`).then((rs) => {
             $(`#post-${postId}`).hide()
             $(`.ant-popover`).hide()
-        }).catch((err) => {
-            console.error("error:", err)
-        })
+        // }).catch((err) => {
+        //     console.error("error:", err)
+        // })
     }
 
     handleComediaMedia = (e, id) => {
@@ -200,16 +200,16 @@ class Feed extends Component {
         this.setState({
             visible: false,
         });
-    };
+    }
 
     handleVisibleChange = visible => {
         this.setState({ visible });
         console.log(visible)
-    };
-
+    }
 
     render() {
         const { feeds } = this.props.state.posts
+        console.log(feeds)
         return (
             feeds.map((post, key) => (
                 <div key={key} id={`post-${post.id}`} className='Feed mb-3 p-3' style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>

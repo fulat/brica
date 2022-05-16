@@ -1,6 +1,6 @@
 import { faCircleArrowLeft, faCircleXmark, faEarthAmerica, faFaceSmile, faImage, faLock, faMicrophone, faUserGroup, faVideo } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { Select } from 'web3uikit'
 import Picker from 'emoji-picker-react'
@@ -22,6 +22,7 @@ const CreatePost = (props) => {
     // const [scrollHeight, setScrollHeight] = useState(0)
     // const [isModalVisible, setIsModalVisible] = useState(false)
     // const [imageUrl, setImageUrl] = useState("none")
+    const textAreaRef = useRef()
 
     const { users, posts } = props.state
     const fileRef = useRef()
@@ -29,7 +30,6 @@ const CreatePost = (props) => {
     const cookies = new Cookies()
     const tokenCookie = cookies.get("ss_us_tnk")
     const { currentUser } = useContext(AuthContextLogin)
-
 
 
     const onEmojiClick = (event, emoji) => {
@@ -157,6 +157,8 @@ const CreatePost = (props) => {
         }
     }
 
+ 
+
     return (
         <Modal
             width={500}
@@ -244,7 +246,7 @@ const CreatePost = (props) => {
                 </div>
                 <div className="to-scroll">
                     <div className="text" style={{ minHeight: 250 }}  >
-                        <textarea id="textArea" onChange={handleOnChange} value={value} className='p-2' placeholder='Type something...'>
+                        <textarea autoFocus id="textArea" onChange={handleOnChange} value={value} className='p-2' placeholder='Type something...'>
                         </textarea>
                         <div>
                             {hasMedia && <div onClick={handleCloseImage} className="close-img hover">

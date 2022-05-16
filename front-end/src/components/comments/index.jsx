@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { faEllipsis, faHeart, faShare, faCamera, faCircleXmark, faComment } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis, faHeart, faShare, faCamera, faCircleXmark, faComment, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import moment from 'moment';
@@ -11,6 +11,7 @@ import Resizer from "react-image-file-resizer"
 import ImageModals from '../post/ImageModals';
 import Picker from 'emoji-picker-react';
 import Reply from '../Replies/Reply';
+import { Popover } from 'antd';
 
 class Commments extends Component {
     static contextType = AuthContextLogin
@@ -21,7 +22,7 @@ class Commments extends Component {
             replyBody: "",
             initialQuantity: 2,
             comments: [],
-            limit: 3,
+            limit: 1,
             hasMedia: false,
             hasMediaReply: false,
             showImageModal: false,
@@ -79,7 +80,12 @@ class Commments extends Component {
     }
 
     handleViewMore = () => {
-        this.fetchComments(this.state.limit + 5)
+        this.fetchComments(this.state.limit + 3)
+        this.setState({
+            limit: this.state.limit + 3
+        })
+        console.log("Limit", this.state.limit);
+
     }
 
     fetchComments = async (limit) => {
@@ -252,6 +258,17 @@ class Commments extends Component {
         })
     }
 
+
+    handleDeleteComment = async (postId) => {
+        // await axios.delete(`posts/${postId}`).then((rs) => {
+            $(`#post-${postId}`).hide()
+            $(`.ant-popover`).hide()
+        // }).catch((err) => {
+        //     console.error("error:", err)
+        // })
+    }
+
+
     componentDidMount() {
         this.fetchComments(1)
     }
@@ -269,7 +286,7 @@ class Commments extends Component {
                     </div>
                     <div onClick={() => this.handleShowComments(post.id)} className="live hover" style={{ display: "flex", alignItems: "center" }}>
                         <FontAwesomeIcon style={{ fontSize: 20, color: "#CDCDCD" }} icon={faComment} />
-                        <span className='ps-2'><b>Comments</b> {post.comments.length > 0 && count}</span>
+                        <span className='ps-2'><b>Comments</b> {count}</span>
                     </div>
                     <div className="live hover" style={{ display: "flex", alignItems: "center", paddingRight: 20 }}>
                         <FontAwesomeIcon style={{ fontSize: 20, color: "#CDCDCD" }} icon={faShare} />
@@ -310,7 +327,19 @@ class Commments extends Component {
                                         </Link>
                                         <span className='time ms-2' style={{ fontSize: 12 }}>{moment(comment.createdAt).fromNow()}</span>
                                     </div>
-                                    <FontAwesomeIcon style={{ fontSize: 18, color: "#666666" }} icon={faEllipsis} />
+                                    <Popover id={`popover-${post.id}`} placement="bottom" trigger="click" content={
+                                        <div style={{ width: 300 }}>
+                                            <div onClick={() => this.handleDeleteComment(post.id)} className="item ps-3 hover"
+                                                style={{ display: "flex", alignItems: "center", height: 50 }}>
+                                                <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 16, color: "#595C60" }} />
+                                                <span className='ms-2'>Delete post</span>
+                                            </div>
+                                        </div>
+                                    }>
+                                        <button style={{ background: "transparent", border: "none" }} className="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" >
+                                            <FontAwesomeIcon id={`popover-${post.id}`} style={{ fontSize: 20, color: "#696969" }} icon={faEllipsis} />
+                                        </button>
+                                    </Popover>
                                 </div>
                                 <div style={{ display: "flex" }}>
                                     <div className='col-11 ps-2 pb-3'>
@@ -353,7 +382,7 @@ class Commments extends Component {
                         <Reply comment={comment} replies={comment.replies} />
                     </section >
                 ))}
-                {count > 1 &&
+                {(count > 1 && this.state.limit < count) &&
                     <div onClick={this.handleViewMore} className='ps-3 pt-2'>
                         <button style={{ background: "none", border: "none", color: "#008DF8" }}>View More</button>
                     </div>
