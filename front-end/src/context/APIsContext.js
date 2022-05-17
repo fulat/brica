@@ -10,7 +10,7 @@ export const APIs = (props) => {
 
     useEffect(() => {
         const fetchPosts = async () => {
-            await axios.get(`/posts/followers/${2}`).then((res) => {
+            await axios.get(`/posts/followers/${1}`).then((res) => {
                 let posts = []
                 if (!res.data.data.error) {
                     res.data.data.forEach(post => {
@@ -26,6 +26,7 @@ export const APIs = (props) => {
     }, [])
 
     const sortDESC = (arr) => arr.sort((a, b) => b.id - a.id)
+    console.log(props);
     return (
         <APIContext.Provider value={{ feed }}>
             <Outlet />
