@@ -11,7 +11,7 @@ const GetAll = async (req, res, model) => {
     }).catch((err) => {
         res.json({
             error: true,
-            message: err
+            message: err.toString()
         })
     })
 }
@@ -25,7 +25,7 @@ const GetOne = async (req, res, model) => {
     }).catch((err) => {
         res.json({
             error: true,
-            message: err
+            message: err.toString()
         })
     })
 }
@@ -54,7 +54,7 @@ const GetOneWithFilter = async (req, res, model) => {
     }).catch((err) => {
         res.json({
             error: true,
-            message: err
+            message: err.toString()
         })
     })
 }
@@ -78,7 +78,7 @@ const GetAllWithFilterWithInclude = async (req, res, model, params, value, inclu
     }).catch((err) => {
         res.json({
             error: true,
-            message: err
+            message: err.toString()
         })
     })
 }
@@ -97,7 +97,7 @@ const GetAllWithFilter = async (req, res, model, params, value) => {
     }).catch((err) => {
         res.json({
             error: true,
-            message: err
+            message: err.toString()
         })
     })
 }
@@ -116,7 +116,7 @@ const GetOneWithParam = async (req, res, model, params) => {
     }).catch((err) => {
         res.json({
             error: true,
-            message: err
+            message: err.toString()
         })
     })
 }
@@ -145,7 +145,7 @@ const GetCoinsWithFilter = async (req, res, model) => {
     }).catch((err) => {
         res.json({
             error: true,
-            message: err
+            message: err.toString()
         })
     })
 }
@@ -158,7 +158,7 @@ const PatchOne = async (model, req, res) => {
             }).catch((err) => {
                 res.json({
                     error: true,
-                    message: err
+                    message: err.toString()
                 })
             })
         } else {
@@ -173,7 +173,7 @@ const PatchOne = async (model, req, res) => {
 const PostUser = async (req, res, model, JoiSchema) => {
     JoiSchema.validateAsync(req.body).then(async () => {
         const User = await model.findOne({ where: { uuid: req.body.uuid } })
-        
+
         if (!User) {
             await model.create(req.body).then((user) => {
                 const token = jwt.sign({ id: user.id, exp: Math.floor(Date.now() / 1000) * 60 }, "jwt")
@@ -185,7 +185,7 @@ const PostUser = async (req, res, model, JoiSchema) => {
             }).catch((err) => {
                 res.json({
                     error: true,
-                    message: err
+                    message: err.toString()
                 })
             })
         } else {
@@ -214,7 +214,7 @@ const Post = (req, res, model, JoiSchema) => {
             }).catch((err) => {
                 res.json({
                     error: true,
-                    message: err
+                    message: err.toString()
                 })
             })
         }
@@ -241,7 +241,7 @@ const PatchUser = async (req, res, model) => {
             }).catch((err) => {
                 res.json({
                     error: true,
-                    message: err
+                    message: err.toString()
                 })
             })
         } else {
@@ -255,13 +255,32 @@ const PatchUser = async (req, res, model) => {
 
 const Patch = async (req, res, model) => {
     await model.findOne({ where: { id: req.params.id } }).then(async (table) => {
+
         if (table) {
-            await table.update(req.body).then(updatedTable => {
-                res.json(updatedTable)
+            await table.update(req.body).then(async table => {
+                model.count({
+                    where: {
+                        [Op.and]: [
+                            { id: req.params.id },
+                            { hidden: false }
+                        ]
+                    }
+                }).then((count) => {
+                    res.json({
+                        table,
+                        count
+                    })
+                }).catch((err) => {
+                    res.json({
+                        error: true,
+                        table,
+                        message: err.toString()
+                    })
+                })
             }).catch((err) => {
                 res.json({
                     error: true,
-                    message: err
+                    message: err.toString()
                 })
             })
         } else {
@@ -270,6 +289,11 @@ const Patch = async (req, res, model) => {
                 message: "This row does not exis in this tablet",
             })
         }
+    }).catch((err) => {
+        res.json({
+            error: true,
+            message: err.toString()
+        })
     })
 }
 

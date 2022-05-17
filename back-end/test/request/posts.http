@@ -34,7 +34,7 @@ Content-Type:  application/json
 
 {
     "body": "The International Monetary Fund's latest report concedes that it's 'impractical' to convert rubles into crypto on a large scale. The earliest moment in the history of the Universe where our current physics still works is 10⁻⁴³ sec after the Big Bang.",
-    "userId": 2,
+    "userId": 1,
     "imageUrl": "https://drasticcode.com/media/Reactstrap-vs-react-bootstrap.jpg",
     "hidden": false
 }

@@ -10,9 +10,10 @@ module.exports = db.define("comments", {
         type: Sequelize.STRING,
         allowNull: true,
     },
-    parentId: {
-        type: Sequelize.INTEGER,
-        allowNull: true
+    hidden: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 })
 

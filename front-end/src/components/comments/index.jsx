@@ -86,14 +86,7 @@ class Commments extends Component {
         })
     }
 
-    fetchComments = async (limit) => {
-        await axios.get(`/comments/post/${this.props.post.id}?limit=${limit}`).then((res) => {
-            this.setState({
-                comments: res.data.data.rows,
-                count: res.data.data.count
-            })
-        })
-    }
+
 
     handleOnCommentChange = (e, id) => {
         this.setState({
@@ -255,16 +248,31 @@ class Commments extends Component {
         })
     }
 
-
-    handleDeleteComment = async (postId) => {
-        // await axios.delete(`posts/${postId}`).then((rs) => {
-        $(`#post-${postId}`).hide()
-        $(`.ant-popover`).hide()
-        // }).catch((err) => {
-        //     console.error("error:", err)
-        // })
+    fetchComments = async (limit) => {
+        await axios.get(`/comments/post/${this.props.post.id}?limit=${limit}`).then((res) => {
+            if (!res.data.error) {
+                this.setState({
+                    comments: res.data.data?.rows,
+                    count: res.data.data?.count
+                })
+            }
+        })
     }
 
+
+    handleDeleteComment = async (id) => {
+        await axios.patch(`/comments/${id}`, {
+            hidden: true
+        }).then((res) => {
+            $(`.ant-popover`).hide()
+            $(`#comment-${id}`).hide()
+            this.setState({
+                count: res.data.count
+            })
+        }).catch((err) => {
+            console.error("error:", err)
+        })
+    }
 
     componentDidMount() {
         this.fetchComments(1)
@@ -310,8 +318,8 @@ class Commments extends Component {
                         </div>
                     }
                 </div>
-                {this.sortDESC(comments).map((comment, key) => (
-                    <section key={key} className='Comments mt-3 ps-2'>
+                {this.sortDESC(comments) && this.sortDESC(comments).map((comment, key) => (
+                    <section key={key} id={`comment-${comment.id}`} className='Comments mt-3 ps-2'>
                         <div style={{ display: "flex" }}>
                             <Link to={`/u/${comment.user.uuid}`}>
                                 <img alt="crypto" className='col-3 hover' style={{ width: 40, height: 40, borderRadius: 100, marginRight: 10 }} src={comment.user.image} />
@@ -326,7 +334,7 @@ class Commments extends Component {
                                     </div>
                                     <Popover id={`popover-${post.id}`} placement="bottom" trigger="click" content={
                                         <div style={{ width: 300 }}>
-                                            <div onClick={() => this.handleDeleteComment(post.id)} className="item ps-3 hover"
+                                            <div onClick={() => this.handleDeleteComment(comment.id)} className="item ps-3 hover"
                                                 style={{ display: "flex", alignItems: "center", height: 50 }}>
                                                 <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 16, color: "#595C60" }} />
                                                 <span className='ms-2'>Delete post</span>
