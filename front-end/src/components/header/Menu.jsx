@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear, faCircleQuestion, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import Dots from './Dots'
