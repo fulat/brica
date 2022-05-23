@@ -39,6 +39,7 @@ export const AuthLogin = () => {
         }
         createUser()
     }, [])
+
     return (
         <AuthContextLogin.Provider value={{ currentUser }}>
             {auth ?

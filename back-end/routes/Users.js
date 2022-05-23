@@ -25,7 +25,7 @@ router.get("/", verifyTokenAuth, async (req, res) => {
 })
 
 // Get one user by id
-router.get("/search", verifyTokenAuth, (req, res) => {
+router.get("/search", (req, res) => {
     GetOneWithFilter(req, res, Users)
 })
 
