@@ -210,7 +210,6 @@ class Feed extends Component {
     render() {
         const { feeds } = this.props.state.posts
         const { id } = this.context.currentUser
-        console.log("Render:", id)
         return (
             // feeds.length < 0 &&
             feeds.map((post, key) => (

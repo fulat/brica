@@ -26,7 +26,6 @@ export const APIs = (props) => {
     }, [])
 
     const sortDESC = (arr) => arr.sort((a, b) => b.id - a.id)
-    console.log(props);
     return (
         <APIContext.Provider value={{ feed }}>
             <Outlet />

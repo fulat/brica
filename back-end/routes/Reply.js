@@ -34,7 +34,6 @@ router.get("/comment/:id", async (req, res) => {
                 attributes: ["id", "uuid", "username", "image"]
             }
         ]
-
     }).then((replies) => {
         res.json({
             data: replies,
