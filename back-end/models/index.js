@@ -31,9 +31,6 @@ UsersFollowers.belongsTo(Users)
 Comments.belongsTo(Posts)
 Comments.belongsTo(Users)
 
-Comments.hasMany(Comments, { as: 'children', foreignKey: 'parentId' });
-Comments.belongsTo(Comments, { as: 'parent', foreignKey: 'parentId' });
-
 CommentLikes.belongsTo(Comments)
 Comments.hasMany(CommentLikes)
 CommentLikes.belongsTo(Users)

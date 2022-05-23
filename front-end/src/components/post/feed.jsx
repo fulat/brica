@@ -108,13 +108,15 @@ class Feed extends Component {
         $(`#button-post-${id}`).hide()
     }
 
-    handleDeleteComment = async (postId) => {
-        // await axios.delete(`posts/${postId}`).then((rs) => {
+    handleDeletePost = async (postId) => {
+        await axios.patch(`posts/${postId}`, {
+            hidden: true
+        }).then(() => {
             $(`#post-${postId}`).hide()
             $(`.ant-popover`).hide()
-        // }).catch((err) => {
-        //     console.error("error:", err)
-        // })
+        }).catch((err) => {
+            console.error("error:", err)
+        })
     }
 
     handleComediaMedia = (e, id) => {
@@ -207,13 +209,15 @@ class Feed extends Component {
 
     render() {
         const { feeds } = this.props.state.posts
+        const { id } = this.context.currentUser
         return (
+            // feeds.length < 0 &&
             feeds.map((post, key) => (
                 <div key={key} id={`post-${post.id}`} className='Feed mb-3 p-3' style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                     <div>
                         <div className='col-1' style={{ display: "flex", width: "100%" }}>
                             <div className='col-11' style={{ display: "flex" }}>
-                                <img alt="crypto" className='col-3 t-2' style={{ width: 42, height: 42, borderRadius: 100 }} src={post.user.image} />
+                                <img alt="crypto" className='col-3 t-2' style={{ width: 42, height: 42, borderRadius: 100 }} src={post?.user.image} />
                                 <div className='ps-3 col-12' style={{ display: "flex", flexDirection: "column", }}>
                                     <Link style={{ color: "black" }} className='hover-with-underline' to={`/u/${post.user.uuid}`}>
                                         <b>{post.user.firstName} {post.user.lastName}</b>
@@ -224,11 +228,18 @@ class Feed extends Component {
                             <div className='col-1 hover' style={{ alignItems: 'center', display: 'flex', justifyContent: 'center', margin: 0 }} >
                                 <Popover id={`popover-${post.id}`} placement="bottom" trigger="click" content={
                                     <div style={{ width: 300 }}>
-                                        <div onClick={() => this.handleDeleteComment(post.id)} className="item ps-3 hover"
-                                            style={{ display: "flex", alignItems: "center", height: 50 }}>
-                                            <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 16, color: "#595C60" }} />
-                                            <span className='ms-2'>Delete post</span>
-                                        </div>
+                                        {post.id === id ?
+                                            <div onClick={() => this.handleDeletePost(post.id)} className="item ps-3 hover"
+                                                style={{ display: "flex", alignItems: "center", height: 50 }}>
+                                                <FontAwesomeIcon icon={faTrash} style={{ fontSize: 16, color: "#595C60" }} />
+                                                <span className='ms-2'>Delete post</span>
+                                            </div> :
+                                            <div onClick={() => { }} className="item ps-3 hover"
+                                                style={{ display: "flex", alignItems: "center", height: 50 }}>
+                                                <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 16, color: "#595C60" }} />
+                                                <span className='ms-2'>Report</span>
+                                            </div>
+                                        }
                                     </div>
                                 }>
                                     <button style={{ background: "transparent", border: "none" }} className="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" >

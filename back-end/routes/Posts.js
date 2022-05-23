@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const { GetAll, GetOne, DeleteOne, GetPostsWithFilter, Post, Patch } = require("../auth/routesMaker")
-const { Posts, Users, Likes, Comments, CommentLikes, UsersFollowers } = require("../models")
+const { Posts, Users, Likes, Comments, CommentLikes, UsersFollowers, Reply, ReplyLikes } = require("../models")
 const joi = require("joi")
 const Sequelize = require("sequelize")
 const jwt = require('jsonwebtoken')
@@ -22,48 +22,26 @@ router.get("/followers/:id", async (req, res) => {
         where: {
             fallower: req.params.id
         },
+        attributes: ["fallower", "userId"],
         limit: 25,
         include: {
             model: Users,
             attributes: ["uuid", "id", "image"],
-
             include: {
                 model: Posts,
-                limit: 15,
+                where: { hidden: false },
                 include: [
+                    {
+                        model: Likes,
+                        attributes: ['id', "userId"],
+                    },
                     {
                         model: Users,
                         order: [['createdAt', 'DESC']],
                         attributes: ["id", "image", "firstName", "lastName"],
-                    },
-
-                    {
-                        model: Comments,
-                        include: [
-                            {
-                                model: Users,
-                                order: [['updatedAt', 'DESC']],
-                                attributes: ["id", "image", "uuid"],
-                            },
-                            {
-                                model: CommentLikes,
-                                attributes: ["id"],
-                                order: [['updatedAt', 'DESC']],
-                                include: {
-                                    model: Users,
-                                    attributes: ["id", "image"],
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        model: Likes,
-                        attributes: ['id', "userId"],
-                        order: [['updatedAt', 'DESC']],
-                    },
+                    }
                 ]
-            },
-
+            }
         }
     }).then(async (data) => {
         res.json({
@@ -185,6 +163,7 @@ router.delete("/:id", async (req, res) => {
         where: { id: req.params.id }
     }).then(async (data) => {
         if (data) {
+
             const comments = await Comments.destroy({
                 where: { postId: req.params.id }
             })
@@ -215,6 +194,20 @@ router.delete("/:id", async (req, res) => {
         res.json({
             error: true,
             message: err
+        })
+    })
+})
+
+
+router.patch("/delete/:id", async (req, res) => {
+    await Posts.findByPk(req.params.id).then(async post => {
+        post.update({
+
+        })
+    }).catch((err) => {
+        res.json({
+            error: true,
+            message: err.toString()
         })
     })
 })

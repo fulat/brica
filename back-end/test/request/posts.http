@@ -2,7 +2,7 @@
 GET http://localhost:8000/posts HTTP/1.1
 
 ### Get All posts
-GET http://localhost:8000/posts/followers/4 HTTP/1.1
+GET http://localhost:8000/posts/followers/1 HTTP/1.1
 
 ### Get All posts
 GET http://localhost:8000/posts/show HTTP/1.1
@@ -31,12 +31,18 @@ Content-Type:  application/json
 ### Update Single posts
 PATCH http://localhost:8000/posts/1 HTTP/1.1
 Content-Type:  application/json
+
 {
     "body": "The International Monetary Fund's latest report concedes that it's 'impractical' to convert rubles into crypto on a large scale. The earliest moment in the history of the Universe where our current physics still works is 10⁻⁴³ sec after the Big Bang.",
     "userId": 1,
-    "imageUrl": "https://drasticcode.com/media/Reactstrap-vs-react-bootstrap.jpg"
+    "imageUrl": "https://drasticcode.com/media/Reactstrap-vs-react-bootstrap.jpg",
+    "hidden": false
 }
 
 ### Delete Single posts
 DELETE http://localhost:8000/posts/10 HTTP/1.1
+
+
+### Delete Single posts
+DELETE http://localhost:8000/posts/delete/38 HTTP/1.1
 

@@ -4,6 +4,7 @@ const { Users, CommentLikes, Comments, Reply, Likes, ReplyLikes } = require("../
 const joi = require("joi")
 const { db } = require("../config/db")
 const ReplyOfReply = require("../models/ReplyOfReply")
+const { Op } = require("sequelize")
 
 // Comments Schema
 const CommentsSchema = joi.object({
@@ -14,23 +15,11 @@ const CommentsSchema = joi.object({
     parentId: joi.number().required().allow(null),
 })
 
-router.get("/get-all", async (req, res) => {
-    await db.query(`
-    WITH GetComment AS (
-        SELECT * FROM posts 
-        FULL OUTER JOIN comments ON posts.id = comments.post_id
-    )
-    SELECT * FROM GetComment;
-    `).then((comment) => {
-        res.json({
-            comment
-        })
-    })
-})
 
 router.get("/", (req, res) => {
     GetAll(req, res, Comments)
 })
+
 router.get("/count/:id", async (req, res) => {
     await Comments.findAndCountAll({
         where: {
@@ -44,7 +33,10 @@ router.get("/count/:id", async (req, res) => {
 router.get("/post/:id", async (req, res) => {
     await Comments.findAndCountAll({
         where: {
-            postId: req.params.id,
+            [Op.and]: [
+                { postId: req.params.id },
+                { hidden: false }
+            ]
         },
         order: [['createdAt', 'DESC']],
         limit: req.query.limit,
@@ -63,15 +55,21 @@ router.get("/post/:id", async (req, res) => {
             },
             {
                 model: Reply,
+                attributes: ["id", "body", "imageUrl", "commentId", "userId"],
                 include: [
                     {
-                        model: ReplyOfReply
+                        model: ReplyOfReply,
+                        attributes: ["id", "body", "imageUrl", "replyId", "userId"],
+
                     },
                     {
-                        model: ReplyLikes
+                        model: ReplyLikes,
+                        attributes: ["id", "replyId", "userId"],
+
                     },
                     {
-                        model: Users
+                        model: Users,
+                        attributes: ["id", "image", "firstName", "lastName"]
                     }
                 ]
             }
@@ -93,8 +91,6 @@ router.get("/post/:id", async (req, res) => {
 router.get("/:id", (req, res) => {
     GetOne(req, res, Comments)
 })
-
-
 
 router.post("/", (req, res) => {
     CommentsSchema.validateAsync(req.body).then(async (bag) => {
@@ -158,7 +154,7 @@ router.delete("/:id", async (req, res) => {
             }
         ]
     }).then(async (comment) => {
-        
+
         // if (comment) {
         //     const likesDestoy = await CommentLikes.destroy({ where: { commentId: comment.id } })
         //     const commentDestroy = comment.destroy()

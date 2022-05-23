@@ -3,7 +3,7 @@ GET http://localhost:8000/reply HTTP/1.1
 
 
 ### Get All Coins
-GET http://localhost:8000/reply/comment/24 HTTP/1.1
+GET http://localhost:8000/reply/comment/12 HTTP/1.1
 
 
 ### Post Single Reply

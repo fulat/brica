@@ -17,16 +17,11 @@ const Header = () => {
     const handleConnectionLogout = async () => {
         if (window.ethereum) {
             localStorage.clear()
-            console.log(localStorage);
             window.location.reload()
         } else {
             setWallet("no connected")
         }
     }
-
-    useEffect(() => {
-        console.log(currentUser)
-    }, [])
 
     return (
         <div className="Header mb-3" style={{ width: "100%" }}>
