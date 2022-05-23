@@ -1,48 +1,49 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear, faCircleQuestion, faRightFromBracket, faBell } from '@fortawesome/free-solid-svg-icons'
+import Dots from './Dots'
+import { Popover } from 'antd'
 
-class Notification extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            user: {},
-            item: [
-                { icon: faGear, title: "Settings" },
-                { icon: faCircleQuestion, title: "Support" },
-                { icon: faRightFromBracket, title: "Logout" },
-            ]
-        }
+
+
+const Notifications = (props) => {
+    const [visible, setVisible] = useState(false)
+    const [notifications] = useState([
+        { icon: faGear, title: "Settings" },
+        { icon: faCircleQuestion, title: "Support" },
+        { icon: faRightFromBracket, title: "Logout" },
+    ])
+
+
+    const handleVisibleChange = visible => {
+        setVisible(visible)
     }
 
-    handleRediretion = (path) => {
-        window.location.href = path
+    const handleRediretion = (path) => {
     }
 
-    render() {
-        return (
-            <div className="hover active dots">
-                <div className="dropdown" dir='center'>
-                    <div data-bs-toggle="dropdown" className="btn dropdown-toggle" display="dinamy" aria-expanded="false" id="dropdownBasic1">
-                        <FontAwesomeIcon style={{ fontSize: 16, color: "#747474" }} icon={faBell} />
-                    </div>
-                    <ul style={{ marginTop: 15 }} className="dropdown-menu dropdown-menu-start dropdown-menu-lg-start" aria-labelledby="dropdownMenuButton1">
-                        {this.state.item.map((item, key) => (
-
-                            <li onClick={key !== 2 ? () => this.handleRediretion(`/${item.title.toLowerCase()}`) : () => { }} key={key} style={{ height: 60 }} className={`col-12 ${key === 2 ? "" : "mb-2"} d-flex align-items-center hoverWithBG`}>
-                                <div style={{ paddingLeft: 25 }} className="col-2 justify-conten-center align-items-center">
-                                    <FontAwesomeIcon style={{ fontSize: 20, color: "gray" }} icon={item.icon} />
-                                </div>
+    return (
+        <div className="hover active dots">
+            <div className="dropdown" dir='center'>
+                <Popover placement="bottom" trigger="click" visible={visible} onVisibleChange={handleVisibleChange} content={
+                    <div style={{ width: 300 }}>
+                        {notifications.map((notification, key) => (
+                            <div onClick={() => { }} key={key} style={{ height: 60 }} className={`col-12 pt-3 d-flex align-notifications-center hoverWithBG`}>
                                 <div className="col-10">
-                                    <span className="ps-3">{item.title}</span>
+                                    <span className="ps-3">{notification.title}</span>
                                 </div>
-                            </li>
+                            </div>
                         ))}
-                    </ul>
-                </div>
+                    </div>
+                } >
+                    <div data-bs-toggle="dropdown" className="btn dropdown-toggle" display="dinamy" aria-expanded="false" id="dropdownBasic1">
+                        <FontAwesomeIcon style={{ fontSize: 18, color: "gray" }} icon={faBell} />
+                    </div>
+                </Popover>
             </div>
-        )
-    }
+        </div>
+    )
 }
 
-export default Notification
+
+export default Notifications

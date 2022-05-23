@@ -3,7 +3,7 @@ GET http://localhost:8000/coins HTTP/1.1
 
 
 ### Get All Coins With Filter
-GET http://localhost:8000/coins/search?search=bit HTTP/1.1
+GET http://localhost:8000/coins/search?search=et HTTP/1.1
 
 ### Get Single Coins
 GET http://localhost:8000/coins/1 HTTP/1.1

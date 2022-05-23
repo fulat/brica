@@ -37,7 +37,7 @@ const Header = () => {
                         <div className="collapse sr navbar-collapse" id="navbarSupportedContent">
                             <Search />
                             <Menu user={currentUser} />
-                            <div onClick={() => this.updateTheme()} className="theme hover active">
+                            <div className="theme hover active">
                                 <Notification />
                             </div>
                             <div>

@@ -1,6 +1,6 @@
 import React from "react";
 
-function Dots(props) {
+const Dots = (props) => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill={props.color} className="hover active" viewBox="0 0 400 400">
             <g>

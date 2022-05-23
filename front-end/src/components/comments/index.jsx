@@ -374,8 +374,6 @@ const Comments = (props) => {
 }
 
 
-
-
 const mapStateToProps = (state, ownProps) => ({
     state, ownProps
 })
