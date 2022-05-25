@@ -6,24 +6,20 @@ import { BigNumber } from "bignumber.js"
 const OurToken = (props) => {
     const [price, setPrice] = useState("")
 
-
+    const fetchToken = async () => {
+        axios.get("coins/our-token").then((res) => {
+            const token = res.data?.TOKEN[0]?.price
+            const decimals = res.data?.TOKEN[0]?.baseCurrency.decimals
+            const weth = res.data?.WETH[0]?.price
+            setPrice(new BigNumber(token * weth).toFixed(decimals))
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
 
     useEffect(() => {
-        const fetchToken = async () => {
-            axios.get("coins/our-token").then((res) => {
-                const token = res.data?.TOKEN[0]?.price
-                const decimals = res.data?.TOKEN[0]?.baseCurrency.decimals
-                const weth = res.data?.WETH[0]?.price
-                setPrice(new BigNumber(token * weth).toFixed(decimals))
-            }).catch((err) => {
-                console.log(err)
-            })
-        }
-
         fetchToken()
     }, [])
-
-
 
     return (
         <div className="OurToken mb-3 col hover">
@@ -36,8 +32,8 @@ const OurToken = (props) => {
             </div>
 
         </div>
-    );
+    )
 }
 
 
-export default OurToken;
+export default OurToken
