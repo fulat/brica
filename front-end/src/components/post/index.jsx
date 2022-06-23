@@ -1,23 +1,25 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { faMicrophone, faVideo } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import AuthContextLogin from "../../context/AuthLoging"
+import { show } from '../../redux/slicers/modalSlice'
 
 
 const Post = (props) => {
     const { currentUser } = useContext(AuthContextLogin)
+    const dispatch = useDispatch()
+    const state = useSelector(state => state)
 
-
+    
     const handleOnClick = () => {
-        props.dispatch({ type: "SHOW_MODAL" })
+        dispatch(show())
+        console.log(state)
     }
 
-
-    const user = {}
     return (
-        <section className="Post mb-3 p-3 ">
+        <section className="Post mb-3 p-3 mt-3">
             <div aria-expanded="false" className='d-flex'>
                 <div className='col-1 pt-1'>
                     {currentUser.image !== {} && <img alt="crypto" className='col-3' style={{ width: 40, height: 40, borderRadius: 100 }} src={currentUser.image} />}

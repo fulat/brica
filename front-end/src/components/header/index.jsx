@@ -24,7 +24,7 @@ const Header = () => {
     }
 
     return (
-        <div className="Header mb-3" style={{ width: "100%" }}>
+        <div className="Header" style={{ width: "100%" }}>
             <div className="container">
                 <nav className="navbar navbar-expand-lg d-flex" style={{ background: "white", alignItems: "center", height: 60 }}>
                     <div className="container-fluid">

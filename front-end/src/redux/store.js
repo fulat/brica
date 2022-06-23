@@ -1,6 +1,12 @@
-import { createStore, applyMiddleware } from "redux"
-import thunk from "redux-thunk"
-import reducers from "./reducers"
+import { configureStore } from '@reduxjs/toolkit'
+import userSlice from "./slicers/userSlice"
+import modalSlice from "./slicers/modalSlice"
+import feedsSlice from "./slicers/feedsSlice"
 
-
-export default createStore(reducers, applyMiddleware(thunk))
+export default configureStore({
+    reducer: {
+        userSlice,
+        modalSlice,
+        feedsSlice
+    }
+})

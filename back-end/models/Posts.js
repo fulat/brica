@@ -10,6 +10,10 @@ module.exports = db.define("posts", {
         type: Sequelize.STRING,
         allowNull: true,
     },
+    privacy: {
+        type: Sequelize.STRING,
+        allowNull: true,
+    },
     hidden: {
         type: Sequelize.BOOLEAN,
         allowNull: false,

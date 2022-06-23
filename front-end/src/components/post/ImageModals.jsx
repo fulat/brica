@@ -1,12 +1,15 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { Modal } from 'antd'
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 function Modals(props) {
-    const { posts } = props.state
+    const state = useSelector(state => state.modalSlice)
+    const dispatch = useDispatch()
+
+    console.log(state)
 
     const handleOk = () => {
         props.dispatch({ type: "HIDE_IMAGE_MODAL" })
@@ -24,9 +27,9 @@ function Modals(props) {
 
     return (
         <div className="ImageModals">
-            <Modal width={"50%"} style={{ borderRadius: 15 }} footer={false} centered title="" visible={posts.showImageModal} onOk={handleOk} onCancel={handleCancel} closeIcon={ModalIcon}>
+            <Modal width={"50%"} style={{ borderRadius: 15 }} footer={false} centered title="" visible={state.commentMedia} onOk={handleOk} onCancel={handleCancel} closeIcon={ModalIcon}>
                 <div className='col-12' style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                    <img style={{ borderRadius: 10 }} src={posts.showImageModalData} alt="" srcSet="" />
+                    <img style={{ borderRadius: 10 }} alt="" srcSet="" />
                 </div>
             </Modal>
         </div>

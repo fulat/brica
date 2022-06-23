@@ -1,7 +1,7 @@
 import { faCircleArrowLeft, faCircleXmark, faEarthAmerica, faFaceSmile, faImage, faLock, faMicrophone, faUserGroup, faVideo } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { Select } from 'web3uikit'
 import Picker from 'emoji-picker-react'
 import Resizer from "react-image-file-resizer"
@@ -9,27 +9,23 @@ import { Modal } from 'antd'
 import axios from 'axios'
 import Cookies from 'universal-cookie'
 import AuthContextLogin from "../../context/AuthLoging"
-
+import { hide } from '../../redux/slicers/modalSlice'
+import { postFeed } from '../../redux/apiFetchs'
 
 const CreatePost = (props) => {
     const [hasVideo, setHasVideo] = useState(false)
     const [file, setFile] = useState(false)
     const [hasMedia, setHasMedia] = useState(false)
     const [showVisivility, setShowVisivility] = useState(false)
-    const [emoji, setEmoji] = useState(null)
     const [value, setValue] = useState("")
-    const [selectOptions, setSelectOptions] = useState("public")
-    // const [scrollHeight, setScrollHeight] = useState(0)
-    // const [isModalVisible, setIsModalVisible] = useState(false)
-    // const [imageUrl, setImageUrl] = useState("none")
-    const textAreaRef = useRef()
+    const [privacy, setPrivacy] = useState("public")
 
-    const { users, posts } = props.state
     const fileRef = useRef()
-    const lStorage = JSON.parse(localStorage.getItem("Parse/M7GZzjiito65lVhn26wVeBXJXSdXKxq0QGhjEfUA/currentUser"))
     const cookies = new Cookies()
     const tokenCookie = cookies.get("ss_us_tnk")
     const { currentUser } = useContext(AuthContextLogin)
+    const modal = useSelector(state => state.modalSlice)
+    const dispatch = useDispatch()
 
 
     const onEmojiClick = (event, emoji) => {
@@ -47,20 +43,10 @@ const CreatePost = (props) => {
     }
 
     const handleOnSelect = ({ id }) => {
-        // setSelectOptions(id)
-    }
-
-    const handleMedia = () => {
-        // setState({
-        //     postType: "media"
-        // })
-        // console.log(fileRef)
-
+        setPrivacy(id)
     }
 
     const handleOnChangeFile = (e) => {
-
-        console.log(e.target.files[0].type.slice(0, 5));
         if (e.target.files[0] && e.target.files[0].type.slice(0, 5) == "image") {
             try {
                 Resizer.imageFileResizer(
@@ -77,7 +63,6 @@ const CreatePost = (props) => {
                             output.src = reader.result
                         }
                         reader.readAsDataURL(e.target.files[0])
-                        // setImageUrl(uri)
                         setHasMedia(true)
                         setShowVisivility(false)
                         setFile(e.target.files[0])
@@ -108,20 +93,15 @@ const CreatePost = (props) => {
         }
     }
 
-    const showModal = () => {
-        props.dispatch({ type: "SHOW_MODAL" })
-    }
-
     const handleOk = () => {
         props.dispatch({ type: "HIDE_MODAL" })
     }
 
     const handleCancel = () => {
-        props.dispatch({ type: "HIDE_MODAL" })
+        dispatch(hide())
     }
 
     const handleCloseImage = () => {
-        // setImageUrl("none")
         setHasMedia(false)
         setShowVisivility(false)
 
@@ -132,53 +112,45 @@ const CreatePost = (props) => {
     }
 
     const handlePost = async () => {
-
         const formData = new FormData()
         formData.append("file", file)
         formData.append("upload_preset", "ugy6mqfd")
 
+        
         if (hasMedia || hasVideo) {
-            const file = await axios.post("https://api.cloudinary.com/v1_1/dbsswqtg9/image/upload", formData)
-            if (file) {
-                await axios.post(`posts/${currentUser.uuid}`, {
-                    imageUrl: file.data.url,
+            const _file = await axios.post("https://api.cloudinary.com/v1_1/dbsswqtg9/image/upload", formData)
+            if (_file) {
+                dispatch(postFeed({
+                    imageUrl: _file.data.url,
                     body: value === "" ? null : value,
-                }, { headers: { authorization: tokenCookie } }).then((res) => {
-                    window.location.reload()
-                })
+                    privacy,
+                    uuid: currentUser.uuid,
+                    tokenCookie
+                }))
             }
         } else {
-            await axios.post(`posts/${currentUser.uuid}`, {
+            dispatch(postFeed({
                 imageUrl: null,
                 body: value,
-            }, { headers: { authorization: tokenCookie } }).then((res) => {
-                window.location.reload()
-            })
+                privacy,
+                uuid: currentUser.uuid,
+                tokenCookie
+            }))
         }
     }
 
- 
 
     return (
-        <Modal
-            width={500}
-            closable={showVisivility ? false : true}
-            style={{ borderRadius: 15 }}
+        <Modal width={500} closable={showVisivility ? false : true} style={{ borderRadius: 15 }} centeredtitle="" visible={modal.show} onOk={handleOk} onCancel={handleCancel}
             closeIcon={
                 <div className="emoji-container-close-icon">
-                    <FontAwesomeIcon
-                        className='hover emoji-close-icon ps-3'
+                    <FontAwesomeIcon className='hover emoji-close-icon ps-3'
                         icon={faCircleXmark} />
-                </div>
-            }
-            centered
-            title=""
-            visible={posts.show} onOk={handleOk}
-            onCancel={handleCancel}
+                </div>}
             footer={
                 <div style={{ width: 500, height: 50, }}>
                     <div style={{ display: "flex" }}>
-                        <div onClick={handleMedia} style={{ display: "flex", alignItems: "center", margin: 20 }}>
+                        <div style={{ display: "flex", alignItems: "center", margin: 20 }}>
                             <label htmlFor='file' className='hover' style={{ display: "flex", alignItems: "center" }} >
                                 <FontAwesomeIcon style={{ fontSize: 20, color: "#0073DD" }} icon={faImage} />
                                 <b className='ps-2'>Media</b>
@@ -219,7 +191,7 @@ const CreatePost = (props) => {
                         src={currentUser.image}
                     />
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                        <b className='ms-2 ps-3' style={{ color: "black", fontSize: 18 }}>{users.user.firstName} {users.user.lastName}</b>
+                        <b className='ms-2 ps-3' style={{ color: "black", fontSize: 18 }}>{currentUser.firstName} {currentUser.lastName}</b>
                         <Select
                             style={{ border: "none" }}
                             defaultOptionIndex={0}

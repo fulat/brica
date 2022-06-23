@@ -135,7 +135,8 @@ router.post("/:uuid", async (req, res) => {
             await Posts.create({
                 body: req.body.body,
                 userId: user.id,
-                imageUrl: req.body.imageUrl
+                imageUrl: req.body.imageUrl,
+                privacy: req.body.privacy
             }).then((data) => {
                 res.json({
                     status: 200,

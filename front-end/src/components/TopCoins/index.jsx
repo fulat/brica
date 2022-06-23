@@ -46,7 +46,7 @@ class TopCoins extends Component {
     }
     render() {
         return (
-            <section className="TopCoins p-3">
+            <section className="TopCoins p-3 mt-3">
                 <div className="title mb-3 mt-2 ms-2" style={{ fontSize: 18, height: 30 }}>
                     <b className='font-weight-bold' style={{ fontSize: 20 }}>Top Coins</b>
                 </div>

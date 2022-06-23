@@ -3,15 +3,16 @@ import { faEllipsis, faHeart, faShare, faCamera, faCircleXmark, faComment, faEye
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 import moment from 'moment'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import $ from "jquery"
 import AuthContextLogin from '../../context/AuthLoging'
 import { Link } from 'react-router-dom'
 import Resizer from "react-image-file-resizer"
 import ImageModals from '../post/ImageModals'
 import Picker from 'emoji-picker-react'
-import Reply from '../Replies/Reply'
+import Reply from '../replies/Reply'
 import { Popover } from 'antd'
+import { showCommentMedia } from '../../redux/slicers/modalSlice'
 
 
 const Comments = (props) => {
@@ -29,6 +30,7 @@ const Comments = (props) => {
     const [file, setFile] = useState(null)
     const [fileReply, setFileReply] = useState(null)
     const { currentUser } = useContext(AuthContextLogin)
+    const dispatch = useDispatch()
 
 
     const handleShowReply = (id) => {
@@ -139,6 +141,8 @@ const Comments = (props) => {
                             const output = document.getElementById('output-comment-media-reply')
                             output.src = reader.result
                             $(`#button-post-${id}`).show()
+                            // dispatch(showCommentMedia(imageUrl))
+
                         }
                         reader.readAsDataURL(e.target.files[0])
                     },
@@ -169,6 +173,7 @@ const Comments = (props) => {
                     $(`#input-from-post-${postId}`).val("")
                     $(`#toggle-comment-from-${postId}`).show()
                     $(`#button-post-${postId}`).hide()
+                    fetchComments(limit < 1 ? 3 : limit)
                 })
             }
         } else {
@@ -179,13 +184,15 @@ const Comments = (props) => {
                 $(`#input-from-post-${postId}`).val("")
                 $(`#toggle-comment-from-${postId}`).show()
                 $(`#button-post-${postId}`).hide()
+                fetchComments(limit < 1 ? 3 : limit)
             })
         }
-        fetchComments(limit < 1 ? 3 : limit)
+        // alert(limit)
     }
 
     const onShowImageModal = (imageUrl) => {
-        props.dispatch({ type: "SHOW_IMAGE_MODAL", data: imageUrl })
+        // props.dispatch({ type: "SHOW_IMAGE_MODAL", data: imageUrl })
+        dispatch(showCommentMedia())
     }
 
     const handleItLikes = (likes) => {
@@ -215,13 +222,14 @@ const Comments = (props) => {
                 $(`#input-reply-${commentId}`).hide()
 
                 setBody("")
+                setReplyBody("")
                 setHasMediaReply(false)
             })
         }
     }
 
     const handleOnChangeReply = async (e) => {
-        setBody(e.target.value)
+        setReplyBody(e.target.value)
         setHasMediaReply(e.target.value !== "" || hasMediaReply ? true : false)
     }
 
@@ -247,7 +255,11 @@ const Comments = (props) => {
     }
 
     const handleCloseImage = (id) => {
-
+        setHasMedia(false)
+        setShowPost(false)
+        setFile(null)
+        $(`#output-comment-media`).hide()
+        $(`#button-post-${id}`).hide()
     }
 
     useEffect(() => {
@@ -358,6 +370,18 @@ const Comments = (props) => {
                                 {hasMediaReply && <button id={`button-reply-${reply.id}`} style={{}} onClick={() => handlePostReply(comment.id)} className='hover comment-post'>Post</button>}
                             </div>
                         </div>
+                        {hasMediaReply &&
+                            <div className="col-12" style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <div className='mt-2 p-2 col-10' style={{ background: "#ECECEC", borderRadius: 10, display: "flex", justifyContent: "space-between" }}>
+                                    <div>
+                                        <img alt='output' id='output-comment-media-reply' src='' style={{ width: 100, borderRadius: 10 }} />
+                                    </div>
+                                    <div onClick={() => handleCloseImage(post.id)} style={{ display: "flex", justifyContent: "center" }} className="close-img pt-1 hover col-1">
+                                        <FontAwesomeIcon icon={faCircleXmark} />
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                     <Reply comment={comment} replies={comment.replies} />
                 </section >

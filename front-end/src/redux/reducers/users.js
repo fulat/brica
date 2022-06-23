@@ -9,6 +9,10 @@ module.exports = (state = initialstate, action) => {
             return Object.assign({}, state, {
                 user: action.data
             })
+        case "GET_ONE_USER":
+            return Object.assign({}, state, {
+                oneUser: action.payload
+            })
         default:
             return state
     }

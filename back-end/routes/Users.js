@@ -1,8 +1,9 @@
 const router = require("express").Router()
 const { GetAll, GetOne, DeleteOne, User, GetOneWithFilter, GetOneWithParam } = require("../auth/routesMaker")
-const { Users, Posts } = require("../models")
+const { Users, Posts, UsersFollowers } = require("../models")
 const joi = require("joi")
 const { verifyTokenAuth } = require("../auth")
+const { Op } = require('sequelize')
 
 
 // User Schema
@@ -15,7 +16,7 @@ const UsersSchema = joi.object({
 })
 
 // Get all users
-router.get("/", verifyTokenAuth, async (req, res) => {
+router.get("/", async (req, res) => {
     // GetAll(req, res, Users)
     await Users.findAll({
         include: Posts
@@ -55,9 +56,46 @@ router.patch("/:id", verifyTokenAuth, (req, res) => {
     User.Patch(req, res, Users)
 })
 
+// Update single user
+router.patch("/:id", verifyTokenAuth, (req, res) => {
+    User.Patch(req, res, Users)
+})
+
+
 // Delete single user
 router.delete("/:id", verifyTokenAuth, (req, res) => {
     DeleteOne(req, res, Users)
+})
+
+
+// Unfollow single user
+router.delete("/:userId/following/:followingId", async (req, res) => {
+    await UsersFollowers.findOne({
+        where: {
+            [Op.and]: [
+                { fallower: req.params.userId },
+                { userId: req.params.followingId },
+            ]
+        }
+    }).then((fallower) => {
+        fallower.destroy().then(() => {
+            res.json({
+                status: 400,
+                error: false,
+                message: "This row does not exist in this table"
+            })
+        }).catch((err) => {
+            res.json({
+                error: true,
+                message: err.toString()
+            })
+        })
+    }).catch((err) => {
+        res.json({
+            error: true,
+            message: "This row does not exist in this table"
+        })
+    })
 })
 
 module.exports = router

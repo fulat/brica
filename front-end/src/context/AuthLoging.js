@@ -4,6 +4,8 @@ import SignUp from '../views/SignUp'
 import Cookies from 'universal-cookie'
 import axios from 'axios'
 import Header from '../components/header'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchCurrentUser } from '../redux/apiFetchs'
 
 const AuthContextLogin = createContext()
 
@@ -11,15 +13,16 @@ export const AuthLogin = () => {
     const [auth, setAuth] = useState(false)
     const [currentUser, setCurrentUser] = useState(null)
     const cookies = new Cookies()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const createUser = async () => {
             if (localStorage.getItem("ethAddress")) {
                 await axios.post("/users", {
-                    firstName: "Brayhan",
-                    lastName: "Anton",
-                    username: "brayhandeaza",
-                    uuid: localStorage.getItem("ethAddress"),
+                    firstName: "undefined",
+                    lastName: "undefined",
+                    username: Date.now() + "",
+                    uuid: localStorage.getItem("ethAddress").toLowerCase(),
                     image: "http://lavinephotography.com.au/wp-content/uploads/2017/01/PROFILE-Photography-112.jpg"
                 }).then(async (res) => {
                     cookies.set("ss_us_tnk", res.data.token, {
@@ -30,6 +33,7 @@ export const AuthLogin = () => {
                         maxAge: new Date().getSeconds() + 2
                     })
                     setCurrentUser(res.data.user)
+                    dispatch(fetchCurrentUser(localStorage.getItem("ethAddress")))
                     setAuth(true)
                 })
             } else {
