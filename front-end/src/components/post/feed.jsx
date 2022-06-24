@@ -8,7 +8,7 @@ import $ from 'jquery'
 import AuthContextLogin from '../../context/AuthLoging'
 import { Link } from 'react-router-dom'
 import { Popover } from 'antd'
-import { fetchFeeds, deleteFeed } from '../../redux/apiFetchs'
+import { fetchFeeds, deleteFeed, unfallowUser } from '../../redux/apiFetchs'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 const Feeds = (props) => {
@@ -24,7 +24,7 @@ const Feeds = (props) => {
     }
 
     const handleUnfollow = (id) => {
-        console.log(id);
+        dispatch(unfallowUser(currentUser.id, id))
     }
 
 

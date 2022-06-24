@@ -46,8 +46,12 @@ router.get("/q/:id", verifyTokenAuth, (req, res) => {
 })
 
 // Create single user
-router.post("/", (req, res) => {
-    User.Post(req, res, Users, UsersSchema)
+router.post("/", (req, res, next) => { User.Post(req, res, next, Users, UsersSchema) }, async (req, res) => {
+    if (!req.user.error) await UsersFollowers.create({ fallower: req.user.user.id, userId: req.user.user.id })
+
+    res.json({
+        user: req.user
+    })
 })
 
 

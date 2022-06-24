@@ -6,7 +6,6 @@ import { connect } from "react-redux"
 import Lives from "./views/Lives"
 import Live from "./views/Live"
 import APIs from "./context/APIsContext"
-import Header from "./components/header"
 
 const App = () => {
 

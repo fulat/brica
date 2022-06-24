@@ -19,8 +19,8 @@ export const AuthLogin = () => {
         const createUser = async () => {
             if (localStorage.getItem("ethAddress")) {
                 await axios.post("/users", {
-                    firstName: "undefined",
-                    lastName: "undefined",
+                    firstName: "null",
+                    lastName: "null",
                     username: Date.now() + "",
                     uuid: localStorage.getItem("ethAddress").toLowerCase(),
                     image: "http://lavinephotography.com.au/wp-content/uploads/2017/01/PROFILE-Photography-112.jpg"

@@ -1,18 +1,16 @@
-import { faCamera, faEllipsis, faHeart, faShare } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsis, faHeart, faShare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 import moment from 'moment'
-import React, { Component, useContext, useEffect, useState } from 'react'
-import { connect, useDispatch } from 'react-redux'
+import React, { useContext, useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import AuthContextLogin from '../../context/AuthLoging'
-import { showCommentMedia } from '../../redux/slicers/modalSlice'
 
 
 const Reply = (props) => {
     const [replies, setReplies] = useState([])
     const { currentUser } = useContext(AuthContextLogin)
-    const dispatch = useDispatch()
 
     const onShowImageModal = (imageUrl) => {
         // // props.dispatch({ type: "SHOW_IMAGE_MODAL", payload: imageUrl })

@@ -30,7 +30,7 @@ export const fetchFeeds = createAsyncThunk("feed/fetchFeeds", (id) => {
 })
 
 // post feed
-export const postFeed = createAsyncThunk("feed/postFeed", ({imageUrl, body, privacy, uuid, tokenCookie }) => {
+export const postFeed = createAsyncThunk("feed/postFeed", ({ imageUrl, body, privacy, uuid, tokenCookie }) => {
     return axios.post(`posts/${uuid}`, {
         imageUrl, body, privacy
     }, {
@@ -44,4 +44,10 @@ export const postFeed = createAsyncThunk("feed/postFeed", ({imageUrl, body, priv
 // delete feed
 export const deleteFeed = createAsyncThunk("feed/deleteFeed", (id) => {
     return axios.patch(`posts/${id}`, { hidden: true }).then((res) => res.data)
+})
+
+
+// unfallow user
+export const unfallowUser = createAsyncThunk("feed/deleteFeed", (userId, followingId) => {
+    return axios.patch(`${userId}/following/${followingId}`, { hidden: true }).then((res) => res.data)
 })

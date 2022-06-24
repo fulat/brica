@@ -1,4 +1,4 @@
-import React, { Component, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { faEllipsis, faHeart, faShare, faCamera, faCircleXmark, faComment, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
@@ -9,7 +9,6 @@ import AuthContextLogin from '../../context/AuthLoging'
 import { Link } from 'react-router-dom'
 import Resizer from "react-image-file-resizer"
 import ImageModals from '../post/ImageModals'
-import Picker from 'emoji-picker-react'
 import Reply from '../replies/Reply'
 import { Popover } from 'antd'
 import { showCommentMedia } from '../../redux/slicers/modalSlice'
@@ -18,17 +17,13 @@ import { showCommentMedia } from '../../redux/slicers/modalSlice'
 const Comments = (props) => {
     const [reply, setReply] = useState(false)
     const [replyBody, setReplyBody] = useState("")
-    const [initialQuantity, setInitialQuantity] = useState(1)
     const [comments, setComments] = useState([])
     const [limit, setLimit] = useState(1)
     const [hasMedia, setHasMedia] = useState(false)
     const [hasMediaReply, setHasMediaReply] = useState(false)
-    const [showImageModal, setShowImageModal] = useState(false)
-    const [showPost, setShowPost] = useState(false)
     const [count, setCount] = useState(0)
     const [body, setBody] = useState("")
     const [file, setFile] = useState(null)
-    const [fileReply, setFileReply] = useState(null)
     const { currentUser } = useContext(AuthContextLogin)
     const dispatch = useDispatch()
 
@@ -78,7 +73,6 @@ const Comments = (props) => {
 
     const handleOnCommentChange = (e, id) => {
         setBody(e.target.value)
-        setShowPost(e.target.value !== "" || hasMedia ? true : false)
 
 
         if (e.target.value !== "" || hasMedia) {
@@ -102,7 +96,6 @@ const Comments = (props) => {
                         const reader = new FileReader()
                         reader.onload = () => {
                             setHasMedia(true)
-                            setShowPost(true)
                             setFile(e.target.files[0])
 
                             const output = document.getElementById('output-comment-media')
@@ -135,8 +128,6 @@ const Comments = (props) => {
                         const reader = new FileReader()
                         reader.onload = () => {
                             setHasMediaReply(true)
-                            setShowPost(true)
-                            setFileReply(e.target.files[0])
 
                             const output = document.getElementById('output-comment-media-reply')
                             output.src = reader.result
@@ -256,7 +247,6 @@ const Comments = (props) => {
 
     const handleCloseImage = (id) => {
         setHasMedia(false)
-        setShowPost(false)
         setFile(null)
         $(`#output-comment-media`).hide()
         $(`#button-post-${id}`).hide()

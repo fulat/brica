@@ -170,18 +170,19 @@ const PatchOne = async (model, req, res) => {
     })
 }
 
-const PostUser = async (req, res, model, JoiSchema) => {
+const PostUser = async (req, res, next, model, JoiSchema) => {
     JoiSchema.validateAsync(req.body).then(async () => {
         const User = await model.findOne({ where: { uuid: req.body.uuid } })
 
         if (!User) {
-            await model.create(req.body).then((user) => {
+            await model.create(req.body).then(async (user) => {
                 const token = jwt.sign({ id: user.id, exp: Math.floor(Date.now() / 1000) * 60 }, "jwt")
-                res.json({
+                req.user = {
                     error: false,
-                    data: user,
+                    user,
                     token
-                })
+                }
+                next()
             }).catch((err) => {
                 res.json({
                     error: true,
