@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { faEllipsis, faHeart, faShare, faCamera, faCircleXmark, faComment, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsis, faHeart, faShare, faCamera, faCircleXmark, faComment, faEyeSlash, faFaceSmile } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 import moment from 'moment'
@@ -12,7 +12,8 @@ import ImageModals from '../post/ImageModals'
 import Reply from '../replies/Reply'
 import { Popover } from 'antd'
 import { showCommentMedia } from '../../redux/slicers/modalSlice'
-
+import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react'
+import PostComment from './PostComment'
 
 const Comments = (props) => {
     const [reply, setReply] = useState(false)
@@ -26,7 +27,6 @@ const Comments = (props) => {
     const [file, setFile] = useState(null)
     const { currentUser } = useContext(AuthContextLogin)
     const dispatch = useDispatch()
-
 
     const handleShowReply = (id) => {
         $(`#input-reply-${id}`).toggle()
@@ -71,48 +71,6 @@ const Comments = (props) => {
         setLimit(limit + 5)
     }
 
-    const handleOnCommentChange = (e, id) => {
-        setBody(e.target.value)
-
-
-        if (e.target.value !== "" || hasMedia) {
-            $(`#button-post-${id}`).show()
-        } else {
-            $(`#button-post-${id}`).hide()
-        }
-    }
-
-    const handleCommediaMediaOnChange = (e, id) => {
-        if (e.target.files[0]) {
-            try {
-                Resizer.imageFileResizer(
-                    e.target.files[0],
-                    500,
-                    300,
-                    "JPEG",
-                    100,
-                    0,
-                    (uri) => {
-                        const reader = new FileReader()
-                        reader.onload = () => {
-                            setHasMedia(true)
-                            setFile(e.target.files[0])
-
-                            const output = document.getElementById('output-comment-media')
-                            output.src = reader.result
-                            $(`#button-post-${id}`).show()
-                        }
-                        reader.readAsDataURL(e.target.files[0])
-                    },
-                    "base64",
-                    200,
-                    200
-                )
-            } catch (err) {
-                console.log(err)
-            }
-        }
-    }
 
     const handleCommediaMediaOnChangeReply = (e, id) => {
         if (e.target.files[0]) {
@@ -200,9 +158,6 @@ const Comments = (props) => {
         })
     }
 
-    const handleShowComments = (id) => {
-        $(`#toggle-comment-from-${id}`).toggle()
-    }
 
     const handlePostReply = async (commentId) => {
         const { id } = currentUser
@@ -260,13 +215,13 @@ const Comments = (props) => {
 
     return (
         <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", width: "100%", height: 50 }}>
+            <div className="mt-3" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", width: "100%" }}>
                 <div onClick={() => handleOnClickLikes(post.id, post.likes)} className="live hover" style={{ display: "flex", alignItems: "center", paddingLeft: 20 }}>
                     <FontAwesomeIcon id={`post-like-icon-${post.id}`} style={{ fontSize: 20, color: handleItLikes(post.likes) ? "#0073DD" : "#CDCDCD" }} icon={faHeart} />
                     <b className='ps-2'>Like</b>
                     <span id={`post-like-${post.id}`} className='ps-1'>{post.likes.length > 0 && abbreviateNumber(post.likes.length)}</span>
                 </div>
-                <div onClick={() => handleShowComments(post.id)} className="live hover" style={{ display: "flex", alignItems: "center" }}>
+                <div className="live hover" style={{ display: "flex", alignItems: "center" }}>
                     <FontAwesomeIcon style={{ fontSize: 20, color: "#CDCDCD" }} icon={faComment} />
                     <span className='ps-2'><b>Comments</b> {count}</span>
                 </div>
@@ -275,26 +230,8 @@ const Comments = (props) => {
                     <span className='ps-2'><b>Share</b> 250</span>
                 </div>
             </div>
-            <div id={`comment-post-${post.id}`}>
-                <div style={{ height: 35, display: "flex" }} className="comment-post-container mt-3">
-                    <input id={`input-from-post-${post.id}`} onChange={(e) => handleOnCommentChange(e, post.id)} className="form-control ms-1" type="text" placeholder="Type a comment" aria-label="Post something" />
-                    <label htmlFor="cameraFile">
-                        <FontAwesomeIcon className='hover m-3' style={{ fontSize: 18, color: "rgba(000, 000, 000, 0.3)" }} icon={faCamera} />
-                        <input onChange={(e) => handleCommediaMediaOnChange(e, post.id)} style={{ display: "none" }} type="file" name="" id="cameraFile" />
-                    </label>
-                    <button id={`button-post-${post.id}`} style={{ display: "none" }} onClick={() => handleOnCommentPost(post.id)} className='hover comment-post'>Post</button>
-                </div>
-                {hasMedia &&
-                    <div className='mt-2 p-2' style={{ background: "#ECECEC", borderRadius: 10, display: "flex", justifyContent: "space-between" }}>
-                        <div>
-                            <img alt='output' id='output-comment-media' src='' style={{ width: 100, borderRadius: 10 }} />
-                        </div>
-                        <div onClick={() => handleCloseImage(post.id)} style={{ display: "flex", justifyContent: "center" }} className="close-img pt-1 hover col-1">
-                            <FontAwesomeIcon icon={faCircleXmark} />
-                        </div>
-                    </div>
-                }
-            </div>
+
+            <PostComment post={post} />
             {sortDESC(comments) && sortDESC(comments).map((comment, key) => (
                 <section key={key} id={`comment-${comment.id}`} className='Comments mt-3 ps-2'>
                     <div style={{ display: "flex" }}>

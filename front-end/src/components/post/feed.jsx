@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { faCopy, faEarthAmerica, faEllipsis, faEyeSlash, faFlag, faLink, faMessage, faTrashCan, faUserXmark } from '@fortawesome/free-solid-svg-icons'
+import {faEarthAmerica, faEllipsis, faEyeSlash, faFlag, faLink, faMessage, faTrashCan, faUserXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Comments from "../comments/"
 import { connect, useDispatch, useSelector } from 'react-redux'
@@ -51,15 +51,15 @@ const Feeds = (props) => {
                                 <div style={{ width: 300 }}>
                                     {post.userId === currentUser.id ?
                                         <div>
-                                            <div onClick={() => handleDeletePost(post.id)} className="item ps-3"
-                                                style={{ display: "flex", alignItems: "center", height: 50 }}>
-                                                <FontAwesomeIcon icon={faTrashCan} style={{ fontSize: 14, color: "#595C60" }} />
-                                                <span className='ms-2'>Delete post</span>
-                                            </div>
                                             <div onClick={() => { }} className="item ps-3"
                                                 style={{ display: "flex", alignItems: "center", height: 50 }}>
                                                 <FontAwesomeIcon icon={faEarthAmerica} style={{ fontSize: 14, color: "#595C60" }} />
                                                 <span className='ms-2'>Edit Privacy</span>
+                                            </div>
+                                            <div onClick={() => handleDeletePost(post.id)} className="item ps-3"
+                                                style={{ display: "flex", alignItems: "center", height: 50 }}>
+                                                <FontAwesomeIcon icon={faTrashCan} style={{ fontSize: 14, color: "#595C60" }} />
+                                                <span className='ms-2'>Delete post</span>
                                             </div>
                                         </div>
                                         :

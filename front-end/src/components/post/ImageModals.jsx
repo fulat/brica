@@ -9,8 +9,6 @@ function Modals(props) {
     const state = useSelector(state => state.modalSlice)
     const dispatch = useDispatch()
 
-    console.log(state)
-
     const handleOk = () => {
         props.dispatch({ type: "HIDE_IMAGE_MODAL" })
     }

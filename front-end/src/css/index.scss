@@ -78,3 +78,24 @@ a:visited {
 .item:last-child {
   border-radius: 0 0 15px 15px;
 }
+
+aside.emoji-picker-react {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.cmt textarea {
+  width: 90% !important;
+  outline: none !important;
+  resize: none;
+  border: none;
+  font-size: 14px;
+  background: transparent;
+  border-radius: 25px;
+}
+
+.cmt textarea:focus {
+  background: transparent !important;
+  box-shadow: none;
+  // border: none;
+}
