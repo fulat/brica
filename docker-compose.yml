@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  # front-end
+  fron-tend:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - social-network
+
+  # back-end
+  back-end:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - social-network
+
+
+# networks
+networks:
+  social-network:
+    driver: bridge

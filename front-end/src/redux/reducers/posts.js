@@ -8,6 +8,8 @@ const initialstate = {
     feeds: []
 }
 
+
+
 const posts = (state = initialstate, action) => {
     switch (action.type) {
         case "SHOW_MODAL":

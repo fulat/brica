@@ -1,9 +1,9 @@
 import { faCircleArrowLeft, faCircleXmark, faEarthAmerica, faFaceSmile, faImage, faLock, faMicrophone, faUserGroup, faVideo } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { Select } from 'web3uikit'
-import Picker from 'emoji-picker-react'
+// import Picker from 'emoji-picker-react'
 import Resizer from "react-image-file-resizer"
 import { Modal } from 'antd'
 import axios from 'axios'
@@ -203,13 +203,13 @@ const CreatePost = (props) => {
                             className='hover emoji ps-3'
                             icon={faFaceSmile} />
                     </div>
-                    {showVisivility && <Picker
+                    {/* {showVisivility && <Picker
                         groupNames={""}
                         disableSearchBar
                         onEmojiClick={onEmojiClick}
                         disableSkinTonePicker
                         disableAutoFocus
-                    />}
+                    />} */}
                 </div>
             }>
             <div className='col-1' style={{ display: "flex", flexDirection: "column", width: "100%", justifyContent: "space-between" }}>

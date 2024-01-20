@@ -3,7 +3,7 @@ const initialstate = {
     user: {},
 }
 
-module.exports = (state = initialstate, action) => {
+const users = (state = initialstate, action) => {
     switch (action.type) {
         case "GET_CURRENT_USER":
             return Object.assign({}, state, {
@@ -13,3 +13,5 @@ module.exports = (state = initialstate, action) => {
             return state
     }
 }
+
+export default users

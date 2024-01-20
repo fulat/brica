@@ -1,17 +1,18 @@
 import React, { useContext } from 'react'
 import { faMicrophone, faVideo } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import AuthContextLogin from "../../context/AuthLoging"
+// import AuthContextLogin from "../../context/AuthLoging"
 
 
 const Post = (props) => {
-    const { currentUser } = useContext(AuthContextLogin)
+    const dispatch = useDispatch()
+    // const { currentUser } = useContext(AuthContextLogin)
 
 
     const handleOnClick = () => {
-        props.dispatch({ type: "SHOW_MODAL" })
+        dispatch({ type: "SHOW_MODAL" })
     }
 
 
@@ -20,7 +21,7 @@ const Post = (props) => {
         <section className="Post mb-3 p-3 ">
             <div aria-expanded="false" className='d-flex'>
                 <div className='col-1 pt-1'>
-                    {currentUser.image !== {} && <img alt="crypto" className='col-3' style={{ width: 40, height: 40, borderRadius: 100 }} src={currentUser.image} />}
+                    {/* {!!currentUser.image && <img alt="crypto" className='col-3' style={{ width: 40, height: 40, borderRadius: 100 }} src={currentUser.image} />} */}
                 </div>
                 <div className='col-10 ms-3' style={{ display: "flex", flexDirection: "column", height: 80, justifyContent: "space-between" }}>
                     <div onClick={handleOnClick} className="form-control mb-0 mt-1 post hover" type="text" placeholder="Post something" aria-label="Post something" >
@@ -53,9 +54,4 @@ const Post = (props) => {
     )
 }
 
-const mapStateToProps = (state, ownProps) => ({
-    state, ownProps
-})
-
-
-export default connect(mapStateToProps)(Post)
+export default Post
